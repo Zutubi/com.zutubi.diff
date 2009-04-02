@@ -18,19 +18,6 @@ public class PatchFileTest extends ZutubiTestCase
     private File oldDir;
     private File newDir;
 
-    public boolean isDiffPresent()
-    {
-        return !SystemUtils.IS_WINDOWS && SystemUtils.findInPath("diff") != null;
-    }
-
-    protected void runTest() throws Throwable
-    {
-        if (isDiffPresent())
-        {
-            super.runTest();
-        }
-    }
-
     @Override
     protected void setUp() throws Exception
     {
@@ -146,9 +133,9 @@ public class PatchFileTest extends ZutubiTestCase
         readApplyAndCheck("nested/file-nested.txt");
     }
 
-    public void testSpecialCharactersInFilename() throws Exception
+    public void testSpaceCharactersInFilename() throws Exception
     {
-        readApplyAndCheck("file with \" odd characters.txt");
+        readApplyAndCheck("file with space characters.txt");
     }
 
     private void readApplyAndCheck() throws Exception

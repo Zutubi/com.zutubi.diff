@@ -225,6 +225,7 @@ public class PatchFile
                 Matcher matcher = RE_HUNK.matcher(line);
                 if (matcher.matches())
                 {
+                    int hunkLineNumber = reader.getLineNumber();
                     long oldOffset = Long.parseLong(matcher.group(1));
                     long oldLength = parseOptionalLong(matcher.group(2));
                     long newOffset = Long.parseLong(matcher.group(3));
@@ -235,8 +236,11 @@ public class PatchFile
                     {
                         patch.setNewlineTerminated(false);
                     }
-                    
-                    patch.addHunk(hunk);
+
+                    if (checkConsistency(patch, hunk, hunkLineNumber))
+                    {
+                        patch.addHunk(hunk);
+                    }
                 }
             }
         }
@@ -306,6 +310,56 @@ public class PatchFile
         }
 
         return previousWasNoNewline;
+    }
+
+    private static boolean checkConsistency(Patch patch, Hunk hunk, int lineNumber) throws PatchParseException
+    {
+        int oldCount = 0;
+        int newCount = 0;
+
+        // Check this hunk comes after the previous one.
+        List<Hunk> previousHunks = patch.getHunks();
+        if (!previousHunks.isEmpty())
+        {
+            Hunk previousHunk = previousHunks.get(previousHunks.size() - 1);
+            if (hunk.getOldOffset() < previousHunk.getOldOffset() + previousHunk.getOldLength())
+            {
+                throw new PatchParseException(lineNumber, "Hunk old offset " + hunk.getOldOffset() + " comes before the end of the previous hunk in the old file");
+            }
+
+            if (hunk.getNewOffset() < previousHunk.getNewOffset() + previousHunk.getNewLength())
+            {
+                throw new PatchParseException(lineNumber, "Hunk new offset " + hunk.getOldOffset() + " comes before the end of the previous hunk in the new file");
+            }
+        }
+
+        // Check this hunk is internally consistent.
+        for (Hunk.Line line: hunk.getLines())
+        {
+            Hunk.LineType type = line.getType();
+            if (type.inOriginal())
+            {
+                oldCount++;
+            }
+
+            if (type.inNew())
+            {
+                newCount++;
+            }
+        }
+
+        if (oldCount != hunk.getOldLength())
+        {
+            throw new PatchParseException(lineNumber, "Hunk old length " + hunk.getOldLength() + " is not consistent with hunk lines");
+        }
+
+        if (newCount != hunk.getNewLength())
+        {
+            throw new PatchParseException(lineNumber, "Hunk new length " + hunk.getOldLength() + " is not consistent with hunk lines");
+        }
+
+        // Return true if this hunk is empty and can be ignored.
+        return oldCount + newCount > 0;
     }
 
     private static class PatchReader implements Closeable

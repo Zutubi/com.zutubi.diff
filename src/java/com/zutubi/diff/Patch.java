@@ -91,7 +91,7 @@ public class Patch
     }
 
     /**
-     * Flag whether or not the new file is termianed with a newline.
+     * Flag whether or not the new file is terminated with a newline.
      *
      * @param newlineTerminated set to true to indicate the new file ends with
      *
@@ -303,7 +303,7 @@ public class Patch
             Hunk.Line hunkLine = lineIt.next();
             if (hunkLine.getType().inOriginal())
             {
-                throw new PatchApplyException("Patch does not apply cleanly: past end of original file '" + file.getAbsolutePath() + "': but found change of type '" + hunkLine.getType().name().toLowerCase());
+                throw new PatchApplyException("Patch does not apply cleanly: past end of original file '" + file.getAbsolutePath() + "': but found change of type '" + hunkLine.getType().name().toLowerCase() + "'");
             }
 
             if (hunkLine.getType().inNew())
