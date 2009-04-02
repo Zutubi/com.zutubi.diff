@@ -13,11 +13,23 @@ import java.util.zip.ZipInputStream;
 public class PatchFileTest extends ZutubiTestCase
 {
     private static final String PREFIX_TEST = "test";
-    private static final String EXTENSION_PATCH = "txt";
 
     private File tempDir;
     private File oldDir;
     private File newDir;
+
+    public boolean isDiffPresent()
+    {
+        return !SystemUtils.IS_WINDOWS && SystemUtils.findInPath("diff") != null;
+    }
+
+    protected void runTest() throws Throwable
+    {
+        if (isDiffPresent())
+        {
+            super.runTest();
+        }
+    }
 
     @Override
     protected void setUp() throws Exception
