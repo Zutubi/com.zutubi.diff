@@ -146,7 +146,13 @@ public class PatchFileTest extends ZutubiTestCase
     private void readApplyAndCheck(String name) throws DiffException, IOException
     {
         File in = new File(oldDir, name);
+        File out = new File(newDir, name);
         boolean existedBefore = in.exists();
+
+        if (out.exists() && SystemUtils.IS_WINDOWS)
+        {
+            FileSystemUtils.translateEOLs(newDir, SystemUtils.CRLF_BYTES, true);
+        }
 
         ProcessBuilder processBuilder = new ProcessBuilder("diff", "-uaN", "old/" + name, "new/" + name);
         processBuilder.directory(tempDir);
@@ -158,19 +164,16 @@ public class PatchFileTest extends ZutubiTestCase
         PatchFile patchFile = PatchFile.read(new FileReader(patch));
         patchFile.apply(oldDir, 1);
 
-        File out = new File(newDir, name);
 
         if (out.exists())
         {
-            if (existedBefore)
-            {
-                diff = SystemUtils.runCommandWithInput(-1, null, processBuilder);
-                assertTrue("Expected no differences, got:\n" + diff, diff.length() == 0);
-            }
-            else
+            if (!existedBefore)
             {
                 assertTrue("Expected file '" + in.getName() + "' to be added, but it does not exist", in.exists());
             }
+
+            diff = SystemUtils.runCommandWithInput(-1, null, processBuilder);
+            assertTrue("Expected no differences, got:\n" + diff, diff.length() == 0);
         }
         else
         {
