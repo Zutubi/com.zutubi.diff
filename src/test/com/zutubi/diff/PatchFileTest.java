@@ -151,7 +151,7 @@ public class PatchFileTest extends ZutubiTestCase
 
         if (out.exists() && SystemUtils.IS_WINDOWS)
         {
-            FileSystemUtils.translateEOLs(newDir, SystemUtils.CRLF_BYTES, true);
+            FileSystemUtils.translateEOLs(out, SystemUtils.CRLF_BYTES, true);
         }
 
         ProcessBuilder processBuilder = new ProcessBuilder("diff", "-uaN", "old/" + name, "new/" + name);
