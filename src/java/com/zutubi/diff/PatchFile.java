@@ -82,9 +82,6 @@ import java.util.regex.Pattern;
  */
 public class PatchFile
 {
-    private static final String HEADER_OLD_FILE = "---";
-    private static final String HEADER_NEW_FILE = "+++";
-    private static final String NO_NEWLINE = "\\ No newline at end of file";
     private static final Pattern RE_EPOCH = Pattern.compile(".*(1970-01-01|\\(revision 0\\)).*");
     private static final Pattern RE_HUNK = Pattern.compile("\\s*@@\\s+-(\\d+)(?:,(\\d+))?\\s+\\+(\\d+)(?:,(\\d+))?\\s+@@\\s*");
 
@@ -184,7 +181,7 @@ public class PatchFile
             // Look for the patch header ---, skipping anything extra that may
             // be in the way.
             String line = reader.peek();
-            if (line.startsWith(HEADER_OLD_FILE))
+            if (line.startsWith(Patch.HEADER_OLD_FILE))
             {
                 patchFile.patches.add(readPatch(reader));
             }
@@ -206,14 +203,14 @@ public class PatchFile
         //
         // The portion after the filenames is optional - and may have a
         // completely different format.
-        Pair<String, Boolean> oldHead = parsePatchHeader(reader, HEADER_OLD_FILE);
-        Pair<String, Boolean> newHead = parsePatchHeader(reader, HEADER_NEW_FILE);
+        Pair<String, Boolean> oldHead = parsePatchHeader(reader, Patch.HEADER_OLD_FILE);
+        Pair<String, Boolean> newHead = parsePatchHeader(reader, Patch.HEADER_NEW_FILE);
 
         Patch patch = new Patch(oldHead.first, oldHead.second, newHead.first, newHead.second);
         while (!reader.spent())
         {
             String line = reader.peek();
-            if (line.startsWith(HEADER_OLD_FILE))
+            if (line.startsWith(Patch.HEADER_OLD_FILE))
             {
                 // Hit the next patch.
                 break;
@@ -289,7 +286,7 @@ public class PatchFile
             if (line.length() > 0)
             {
                 char first = line.charAt(0);
-                if (first == '\\' && line.equalsIgnoreCase(NO_NEWLINE))
+                if (first == '\\' && line.equalsIgnoreCase(Patch.NO_NEWLINE))
                 {
                     previousWasNoNewline = true;
                 }

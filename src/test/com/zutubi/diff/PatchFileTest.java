@@ -154,7 +154,7 @@ public class PatchFileTest extends ZutubiTestCase
             FileSystemUtils.translateEOLs(out, SystemUtils.CRLF_BYTES, true);
         }
 
-        ProcessBuilder processBuilder = new ProcessBuilder("diff", "-uaN", "old/" + name, "new/" + name);
+        ProcessBuilder processBuilder = new ProcessBuilder("diff", "-uN", "old/" + name, "new/" + name);
         processBuilder.directory(tempDir);
         String diff = SystemUtils.runCommandWithInput(1, null, processBuilder);
 

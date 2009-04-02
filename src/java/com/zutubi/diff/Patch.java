@@ -22,6 +22,10 @@ import java.util.List;
  */
 public class Patch
 {
+    public static final String HEADER_OLD_FILE = "---";
+    public static final String HEADER_NEW_FILE = "+++";
+    public static final String NO_NEWLINE = "\\ No newline at end of file";
+
     private String oldFile;
     private boolean isAdded;
     private String newFile;
@@ -311,5 +315,11 @@ public class Patch
                 writeLine(writer, hunkLine);
             }
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return HEADER_OLD_FILE + " " + oldFile + '\t' + isAdded + '\n' + HEADER_NEW_FILE + " " + newFile + '\t' + isDeleted;
     }
 }
