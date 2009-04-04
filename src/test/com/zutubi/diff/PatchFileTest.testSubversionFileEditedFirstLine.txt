@@ -1,0 +1,10 @@
+Index: file-edited-first-line.txt
+===================================================================
+--- file-edited-first-line.txt	(revision 1)
++++ file-edited-first-line.txt	(working copy)
+@@ -1,4 +1,4 @@
+-this file will
++i have now edited this line
+ have its first
+ line edited in
+ the new dir

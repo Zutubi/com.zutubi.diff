@@ -1,0 +1,11 @@
+Index: file-edited-second-line.txt
+===================================================================
+--- file-edited-second-line.txt	(revision 1)
++++ file-edited-second-line.txt	(working copy)
+@@ -1,5 +1,5 @@
+ this file will
+-have its second
++snap! count yourself edited.
+ line edited in
+ the new dir
+ 

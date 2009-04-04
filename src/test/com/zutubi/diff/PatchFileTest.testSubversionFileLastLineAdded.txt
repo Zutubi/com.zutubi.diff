@@ -1,0 +1,9 @@
+Index: file-last-line-added.txt
+===================================================================
+--- file-last-line-added.txt	(revision 1)
++++ file-last-line-added.txt	(working copy)
+@@ -12,3 +12,4 @@
+ pariatur. Excepteur sint occaecat cupidatat non proident,
+ sunt in culpa qui officia deserunt mollit anim id est
+ laborum.
++this is a new line

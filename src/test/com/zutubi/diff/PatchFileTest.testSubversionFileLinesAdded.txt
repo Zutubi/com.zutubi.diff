@@ -1,0 +1,14 @@
+Index: file-lines-added.txt
+===================================================================
+--- file-lines-added.txt	(revision 1)
++++ file-lines-added.txt	(working copy)
+@@ -5,6 +5,9 @@
+ Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+ sed do eiusmod tempor incididunt ut labore et dolore
+ magna aliqua. Ut enim ad minim veniam, quis nostrud
++here are a few
++new lines just
++for you
+ exercitation ullamco laboris nisi ut aliquip ex ea commodo
+ consequat. Duis aute irure dolor in reprehenderit in
+ voluptate velit esse cillum dolore eu fugiat nulla

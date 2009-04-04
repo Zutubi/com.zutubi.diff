@@ -27,9 +27,9 @@ public class Patch
     public static final String NO_NEWLINE = "\\ No newline at end of file";
 
     private String oldFile;
-    private boolean isAdded;
+    private boolean oldEpoch;
     private String newFile;
-    private boolean isDeleted;
+    private boolean newEpoch;
     private boolean newlineTerminated = true;
 
     private List<Hunk> hunks = new LinkedList<Hunk>();
@@ -38,18 +38,19 @@ public class Patch
     /**
      * Create a new patch representing changes to a file.
      *
-     * @param oldFile the path of the old file that was changed
-     * @param added   true iff the old file did not exist - the file was added
-     * @param newFile the path of the new file that was created
-     * @param deleted true iff the new file does not exist - the file was
-     *                deleted
+     * @param oldFile  the path of the old file that was changed
+     * @param oldEpoch true iff the old file is marked with a timestamp of the
+     *                 epoch (or equivalent)
+     * @param newFile  the path of the new file that was created
+     * @param newEpoch true iff the new file is marked with a timestamp of the
+     *                 epoch (or equivalent)
      */
-    public Patch(String oldFile, boolean added, String newFile, boolean deleted)
+    public Patch(String oldFile, boolean oldEpoch, String newFile, boolean newEpoch)
     {
         this.oldFile = oldFile;
-        isAdded = added;
+        this.oldEpoch = oldEpoch;
         this.newFile = newFile;
-        isDeleted = deleted;
+        this.newEpoch = newEpoch;
     }
 
     /**
@@ -65,7 +66,20 @@ public class Patch
      */
     public boolean isAdded()
     {
-        return isAdded;
+        if (oldEpoch)
+        {
+            for (Hunk hunk: hunks)
+            {
+                if (hunk.getOldLength() > 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -81,7 +95,20 @@ public class Patch
      */
     public boolean isDeleted()
     {
-        return isDeleted;
+        if (newEpoch)
+        {
+            for (Hunk hunk: hunks)
+            {
+                if (hunk.getNewLength() > 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -145,16 +172,16 @@ public class Patch
      */
     public void apply(File file) throws PatchApplyException
     {
-        if (isDeleted)
+        if (isDeleted())
         {
             if (!file.delete())
             {
                 throw new PatchApplyException("Unable to delete file '" + file.getAbsolutePath() + "'");
             }
         }
-        else if (isAdded || file.length() == 0)
+        else if (isAdded() || file.length() == 0)
         {
-            if (isAdded && file.exists())
+            if (isAdded() && file.exists())
             {
                 throw new PatchApplyException("Cannot add file '" + file.getAbsolutePath() + "': file already exists");
             }
@@ -320,6 +347,6 @@ public class Patch
     @Override
     public String toString()
     {
-        return HEADER_OLD_FILE + " " + oldFile + '\t' + isAdded + '\n' + HEADER_NEW_FILE + " " + newFile + '\t' + isDeleted;
+        return HEADER_OLD_FILE + " " + oldFile + '\t' + oldEpoch + '\n' + HEADER_NEW_FILE + " " + newFile + '\t' + newEpoch;
     }
 }

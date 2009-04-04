@@ -1,0 +1,13 @@
+Index: file with space characters.txt
+===================================================================
+--- file with space characters.txt	(revision 1)
++++ file with space characters.txt	(working copy)
+@@ -6,7 +6,7 @@
+ special cases in some
+ patch formats (like
+ git's)
+-
++edit the blank line for fun
+ Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+ sed do eiusmod tempor incididunt ut labore et dolore
+ magna aliqua. Ut enim ad minim veniam, quis nostrud

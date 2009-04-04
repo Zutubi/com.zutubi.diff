@@ -1,0 +1,7 @@
+Index: file-edited-single-line.txt
+===================================================================
+--- file-edited-single-line.txt	(revision 1)
++++ file-edited-single-line.txt	(working copy)
+@@ -1 +1 @@
+-this file has just one line which will be edited
++this file has just one line which has now been edited
