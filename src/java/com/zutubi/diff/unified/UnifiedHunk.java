@@ -1,4 +1,4 @@
-package com.zutubi.diff;
+package com.zutubi.diff.unified;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -8,9 +8,9 @@ import java.util.List;
  * Represents a single change to a file as part of a larger patch.  Hunks
  * are introduced by the @@ ... @@ header in unified diffs.
  * 
- * @see Patch
+ * @see UnifiedPatch
  */
-public class Hunk
+public class UnifiedHunk
 {
     private long oldOffset;
     private long oldLength;
@@ -29,7 +29,7 @@ public class Hunk
      *                  in the new file
      * @param newLength number of lines in the hunk that appear in the new file
      */
-    public Hunk(long oldOffset, long oldLength, long newOffset, long newLength)
+    public UnifiedHunk(long oldOffset, long oldLength, long newOffset, long newLength)
     {
         this.oldOffset = oldOffset;
         this.oldLength = oldLength;

@@ -1,5 +1,6 @@
 package com.zutubi.diff;
 
+import com.zutubi.diff.unified.UnifiedPatchParser;
 import com.zutubi.util.FileSystemUtils;
 import com.zutubi.util.SystemUtils;
 import com.zutubi.util.ZipUtils;
@@ -11,14 +12,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.zip.ZipInputStream;
 
-public class PatchFileTest extends ZutubiTestCase
+public class PatchFileParserTest extends ZutubiTestCase
 {
     private static final String PREFIX_TEST = "test";
+    private static final String EXTENSION_PATCH = "txt";
 
     private File tempDir;
     private File oldDir;
     private File newDir;
-    private static final String EXTENSION_PATCH = "txt";
+    private PatchFileParser parser;
 
     @Override
     protected void setUp() throws Exception
@@ -31,6 +33,8 @@ public class PatchFileTest extends ZutubiTestCase
 
         ZipUtils.extractZip(new ZipInputStream(getInput("old", "zip")), oldDir);
         ZipUtils.extractZip(new ZipInputStream(getInput("new", "zip")), newDir);
+
+        parser = new PatchFileParser(new UnifiedPatchParser());
     }
 
     @Override
@@ -230,6 +234,19 @@ public class PatchFileTest extends ZutubiTestCase
         singleFilePatchHelper();
     }
 
+    public void testBadOldFile() throws Exception
+    {
+        try
+        {
+            parseSinglePatch();
+            fail("Input file shouldn't parse");
+        }
+        catch (PatchParseException e)
+        {
+            assertEquals(e.getMessage(), "1: Patch header line '---' is missing filename");
+        }
+    }
+
     private void readApplyAndCheck() throws Exception
     {
         readApplyAndCheck(convertName());
@@ -244,16 +261,21 @@ public class PatchFileTest extends ZutubiTestCase
         File patch = new File(tempDir, "patch");
         FileSystemUtils.createFile(patch, diff);
 
-        PatchFile patchFile = PatchFile.read(new FileReader(patch));
+        PatchFile patchFile = parser.parse(new FileReader(patch));
         applyAndCheck(patchFile, 1, name);
     }
 
     private void singleFilePatchHelper() throws PatchParseException, PatchApplyException, IOException
     {
-        PatchFile pf = PatchFile.read(new InputStreamReader(getInput(EXTENSION_PATCH)));
+        PatchFile pf = parseSinglePatch();
         assertEquals(1, pf.getPatches().size());
         String patchedFile = pf.getPatches().get(0).getNewFile();
         applyAndCheck(pf, 0, patchedFile);
+    }
+
+    private PatchFile parseSinglePatch() throws PatchParseException
+    {
+        return parser.parse(new InputStreamReader(getInput(EXTENSION_PATCH)));
     }
 
     private void applyAndCheck(PatchFile patchFile, int prefixStripCount, String name) throws PatchParseException, PatchApplyException, IOException
