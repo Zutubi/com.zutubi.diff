@@ -27,7 +27,7 @@ public class PatchFileParserTest extends ZutubiTestCase
     {
         super.setUp();
 
-        tempDir = FileSystemUtils.createTempDir(getName(), ".tmp");
+        tempDir = createTempDirectory();
         oldDir = new File(tempDir, "old");
         newDir = new File(tempDir, "new");
 
