@@ -4,7 +4,7 @@ import com.zutubi.diff.PatchParseException;
 import com.zutubi.diff.PatchParser;
 import com.zutubi.diff.PeekReader;
 import com.zutubi.util.Pair;
-import com.zutubi.util.TextUtils;
+import com.zutubi.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -163,7 +163,7 @@ public class UnifiedPatchParser implements PatchParser
 
     private long parseOptionalLong(String s)
     {
-        if (TextUtils.stringSet(s))
+        if (StringUtils.stringSet(s))
         {
             return Long.parseLong(s);
         }
