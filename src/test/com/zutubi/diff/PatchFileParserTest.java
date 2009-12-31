@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.zip.ZipInputStream;
 
+/**
+ * NOTE: cygwin is requried on the path for windows machines.
+ */
 public class PatchFileParserTest extends ZutubiTestCase
 {
     private static final String PREFIX_TEST = "test";
@@ -40,7 +43,7 @@ public class PatchFileParserTest extends ZutubiTestCase
     @Override
     protected void tearDown() throws Exception
     {
-        FileSystemUtils.rmdir(tempDir);
+        removeDirectory(tempDir);
         super.tearDown();
     }
 
