@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="text/xsl" href="http://www.jayasoft.fr/org/ivyrep/ivy-doc.xsl"?>
-<ivy-module version="1.0">
+<ivy-module version="2.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    
     <info organisation="zutubi" module="com.zutubi.diff" status="integration">
         <ivyauthor name="zutubi" url="http://www.zutubi.com/"/>
         <description homepage="http://www.zutubi.com/">
@@ -9,9 +11,7 @@
     </info>
 
     <configurations>
-        <conf name="release" description="Defines those packages that are included in the final release."/>
-        <conf name="build" description="All of the packages required during the build."/>
-        <conf name="src" description="The source packages included as part of the source release"/>
+        <include file="${project.root.dir}/etc/default-ivy-configurations.xml"/>
     </configurations>
 
     <publications>
@@ -21,8 +21,8 @@
     </publications>
 
     <dependencies>
-        <dependency org="junit" name="junit" rev="3.8.1" conf="build->default"/>
-        <dependency org="zutubi" name="com.zutubi.util" rev="latest.integration" conf="release,build,src->@"/>
+        <!-- Project module dependencies -->        
+        <dependency org="zutubi" name="com.zutubi.util" rev="latest.integration" conf="*->@"/>
     </dependencies>
 </ivy-module>
 
