@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.util.zip.ZipInputStream;
 
 /**
- * NOTE: cygwin is requried on the path for windows machines.
+ * NOTE: cygwin is required on the path for windows machines.
  */
 public class PatchFileParserTest extends ZutubiTestCase
 {

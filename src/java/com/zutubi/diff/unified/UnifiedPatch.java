@@ -312,14 +312,40 @@ public class UnifiedPatch implements Patch
             IOUtils.close(writer);
         }
 
-        if (!file.delete())
+        copyTempToTarget(file, tempFile);
+        
+        if (!tempFile.delete())
         {
-            throw new PatchApplyException("Cannot remove original file '" + file.getAbsolutePath() + "'");
+            throw new PatchApplyException("Cannot remove temporary file '" + tempFile.getAbsolutePath() + "'");
         }
+    }
 
-        if (!tempFile.renameTo(file))
+    /**
+     * Copies the temporary file to the target file.  This is done in this
+     * manner to preserve the target file's permissions.
+     * 
+     * @param file     the target file
+     * @param tempFile the temporary file
+     * @throws PatchApplyException on an I/O error
+     */
+    private void copyTempToTarget(File file, File tempFile) throws PatchApplyException
+    {
+        InputStream is = null;
+        OutputStream os = null;
+        try
         {
-            throw new PatchApplyException("Cannot rename temp file '" + tempFile.getAbsolutePath() + "' to '" + file.getAbsolutePath() + "'");
+            is = new FileInputStream(tempFile);
+            os = new FileOutputStream(file);
+            IOUtils.joinStreams(is, os);
+        }
+        catch (IOException e)
+        {
+            throw new PatchApplyException("Cannot copy temporary file '" + tempFile.getAbsolutePath() + "' to original file '" + file.getAbsolutePath() + "'");
+        }
+        finally
+        {
+            IOUtils.close(is);
+            IOUtils.close(os);
         }
     }
 
