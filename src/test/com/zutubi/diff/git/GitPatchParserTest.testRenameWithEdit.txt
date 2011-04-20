@@ -1,0 +1,20 @@
+diff --git a/src/clojure/contrib/apply_macro.clj b/src/clojure/contrib/apply_micro.clj
+similarity index 85%
+rename from src/clojure/contrib/apply_macro.clj
+rename to src/clojure/contrib/apply_micro.clj
+index eeb15e9..28328ff 100644
+--- a/src/clojure/contrib/apply_macro.clj
++++ b/src/clojure/contrib/apply_micro.clj
+@@ -12,11 +12,7 @@
+ ;; remove this notice, or any other, from this software.
+ 
+ 
+-;; Don't use this.  I mean it.  It's evil.  How evil?  You can't
+-;; handle it, that's how evil it is.  That's right.  I did it so you
+-;; don't have to, ok?  Look but don't touch.  Use this lib and you'll
+-;; go blind.
+-
++;; Use this, it will make you cool.
+ 
+ (ns apply-macro)
+ 

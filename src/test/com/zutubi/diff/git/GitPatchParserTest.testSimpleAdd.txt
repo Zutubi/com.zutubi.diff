@@ -1,0 +1,8 @@
+diff --git a/launchers/newfile.txt b/launchers/newfile.txt
+new file mode 100644
+index 0000000..baa78fd
+--- /dev/null
++++ b/launchers/newfile.txt
+@@ -0,0 +1,2 @@
++this is a
++new text file

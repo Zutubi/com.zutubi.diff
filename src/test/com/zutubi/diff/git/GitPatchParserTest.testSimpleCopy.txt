@@ -1,0 +1,4 @@
+diff --git a/src/clojure/contrib/apply_macro.clj b/src/clojure/contrib/apply_micro.clj
+similarity index 100%
+copy from src/clojure/contrib/apply_macro.clj
+copy to src/clojure/contrib/apply_micro.clj

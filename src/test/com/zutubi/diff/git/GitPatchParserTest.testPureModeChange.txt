@@ -1,0 +1,3 @@
+diff --git a/pom.xml b/pom.xml
+old mode 100644
+new mode 100755
