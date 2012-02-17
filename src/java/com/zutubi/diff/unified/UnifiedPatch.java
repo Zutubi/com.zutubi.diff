@@ -214,7 +214,7 @@ public class UnifiedPatch implements Patch
                 IOUtils.close(writer);
             }
         }
-        else
+        else if (!hunks.isEmpty())
         {
             applyChanges(file);
         }

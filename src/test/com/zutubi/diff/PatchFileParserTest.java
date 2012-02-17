@@ -1,5 +1,6 @@
 package com.zutubi.diff;
 
+import com.zutubi.diff.unified.UnifiedPatch;
 import com.zutubi.diff.unified.UnifiedPatchParser;
 import com.zutubi.util.FileSystemUtils;
 import com.zutubi.util.SystemUtils;
@@ -235,6 +236,30 @@ public class PatchFileParserTest extends ZutubiTestCase
     public void testSubversionFileDeleteNewline() throws Exception
     {
         singleFilePatchHelper();
+    }
+
+    public void testSubversionMergeinfo() throws Exception
+    {
+        PatchFile pf = parseSinglePatch();
+        assertEquals(1, pf.getPatches().size());
+        Patch patch = pf.getPatches().get(0);
+        String patchedFile = patch.getNewFile();
+        assertEquals(".", patchedFile);
+        assertEquals(0, ((UnifiedPatch) patch).getHunks().size());
+    }
+
+    public void testSubversionDiffPlusMergeinfo() throws Exception
+    {
+        PatchFile pf = parseSinglePatch();
+        assertEquals(2, pf.getPatches().size());
+
+        Patch patch = pf.getPatches().get(0);
+        assertEquals(".", patch.getNewFile());
+        assertEquals(0, ((UnifiedPatch) patch).getHunks().size());
+
+        patch = pf.getPatches().get(1);
+        assertEquals("build.xml", patch.getNewFile());
+        assertEquals(1, ((UnifiedPatch) patch).getHunks().size());
     }
 
     public void testBadOldFile() throws Exception
