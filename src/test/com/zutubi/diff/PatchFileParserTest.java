@@ -2,9 +2,9 @@ package com.zutubi.diff;
 
 import com.zutubi.diff.unified.UnifiedPatch;
 import com.zutubi.diff.unified.UnifiedPatchParser;
-import com.zutubi.util.FileSystemUtils;
 import com.zutubi.util.SystemUtils;
-import com.zutubi.util.ZipUtils;
+import com.zutubi.util.io.FileSystemUtils;
+import com.zutubi.util.io.ZipUtils;
 import com.zutubi.util.junit.ZutubiTestCase;
 
 import java.io.File;

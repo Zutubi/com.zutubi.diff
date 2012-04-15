@@ -1,6 +1,6 @@
 package com.zutubi.diff;
 
-import com.zutubi.util.FileSystemUtils;
+import com.zutubi.util.io.FileSystemUtils;
 
 import java.io.File;
 import java.util.Collections;

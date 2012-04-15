@@ -3,8 +3,8 @@ package com.zutubi.diff.unified;
 import com.zutubi.diff.PatchParseException;
 import com.zutubi.diff.PatchParser;
 import com.zutubi.diff.PeekReader;
-import com.zutubi.util.Pair;
 import com.zutubi.util.StringUtils;
+import com.zutubi.util.adt.Pair;
 
 import java.io.IOException;
 import java.util.List;
