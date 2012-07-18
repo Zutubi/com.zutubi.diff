@@ -115,7 +115,10 @@ public class PatchFileParserTest extends ZutubiTestCase
 
     public void testUnemptied() throws Exception
     {
-        readApplyAndCheck();
+        if (!SystemUtils.IS_WINDOWS)
+        {
+            readApplyAndCheck();
+        }
     }
 
     public void testVariousChanges() throws Exception
