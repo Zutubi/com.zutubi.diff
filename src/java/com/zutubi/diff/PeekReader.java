@@ -79,6 +79,11 @@ public class PeekReader implements Closeable
         return lineNumber;
     }
 
+    /**
+     * Closes this reader by closing the underlying reader.
+     *
+     * @throws IOException on error closing the underlying reader
+     */
     public void close() throws IOException
     {
         delegate.close();

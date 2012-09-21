@@ -3,8 +3,6 @@ package com.zutubi.diff.unified;
 import com.zutubi.diff.PatchParseException;
 import com.zutubi.diff.PatchParser;
 import com.zutubi.diff.PeekReader;
-import com.zutubi.util.StringUtils;
-import com.zutubi.util.adt.Pair;
 
 import java.io.IOException;
 import java.util.List;
@@ -85,6 +83,21 @@ public class UnifiedPatchParser implements PatchParser
     private static final Pattern RE_EPOCH = Pattern.compile(".*(1970-01-01|\\(revision 0\\)).*");
     private static final Pattern RE_HUNK = Pattern.compile("\\s*@@\\s+-(\\d+)(?:,(\\d+))?\\s+\\+(\\d+)(?:,(\\d+))?\\s+@@\\s*");
 
+    /**
+     * Struct to hold information for a patch header line.
+     */
+    private static class PatchHeader
+    {
+        private String filename;
+        private boolean isEpoch;
+
+        private PatchHeader(String filename, boolean epoch)
+        {
+            this.filename = filename;
+            isEpoch = epoch;
+        }
+    }
+
     public boolean isPatchHeader(String line)
     {
         return line.startsWith(UnifiedPatch.HEADER_OLD_FILE);
@@ -99,10 +112,10 @@ public class UnifiedPatchParser implements PatchParser
         //
         // The portion after the filenames is optional - and may have a
         // completely different format.
-        Pair<String, Boolean> oldHead = parsePatchHeader(reader, UnifiedPatch.HEADER_OLD_FILE);
-        Pair<String, Boolean> newHead = parsePatchHeader(reader, UnifiedPatch.HEADER_NEW_FILE);
+        PatchHeader oldHead = parsePatchHeader(reader, UnifiedPatch.HEADER_OLD_FILE);
+        PatchHeader newHead = parsePatchHeader(reader, UnifiedPatch.HEADER_NEW_FILE);
 
-        UnifiedPatch patch = new UnifiedPatch(oldHead.first, oldHead.second, newHead.first, newHead.second);
+        UnifiedPatch patch = new UnifiedPatch(oldHead.filename, oldHead.isEpoch, newHead.filename, newHead.isEpoch);
         while (!reader.spent())
         {
             String line = reader.peek();
@@ -141,7 +154,7 @@ public class UnifiedPatchParser implements PatchParser
         return patch;
     }
 
-    private Pair<String, Boolean> parsePatchHeader(PeekReader reader, String indicator) throws IOException, PatchParseException
+    private PatchHeader parsePatchHeader(PeekReader reader, String indicator) throws IOException, PatchParseException
     {
         String line = reader.next();
         if (!line.startsWith(indicator))
@@ -158,12 +171,12 @@ public class UnifiedPatchParser implements PatchParser
         }
 
         boolean isEpoch = parts.length == 2 && RE_EPOCH.matcher(parts[1]).matches();
-        return new Pair<String, Boolean>(filename, isEpoch);
+        return new PatchHeader(filename, isEpoch);
     }
 
     private long parseOptionalLong(String s)
     {
-        if (StringUtils.stringSet(s))
+        if (s != null && !s.isEmpty())
         {
             return Long.parseLong(s);
         }

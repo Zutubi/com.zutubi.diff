@@ -3,8 +3,8 @@ package com.zutubi.diff.unified;
 import com.zutubi.diff.Patch;
 import com.zutubi.diff.PatchApplyException;
 import com.zutubi.diff.PatchType;
-import com.zutubi.util.SystemUtils;
-import com.zutubi.util.io.IOUtils;
+import com.zutubi.diff.util.Environment;
+import com.zutubi.diff.util.IOUtils;
 
 import java.io.*;
 import java.util.Collections;
@@ -204,6 +204,8 @@ public class UnifiedPatch implements Patch
                         writeLine(writer, line);
                     }
                 }
+
+                writer.close();
             }
             catch (IOException e)
             {
@@ -211,7 +213,7 @@ public class UnifiedPatch implements Patch
             }
             finally
             {
-                IOUtils.close(writer);
+                IOUtils.failsafeClose(writer);
             }
         }
         else if (!hunks.isEmpty())
@@ -225,7 +227,7 @@ public class UnifiedPatch implements Patch
         writer.write(line.getContent());
         if (newlineTerminated || line != lastLineInNew)
         {
-            writer.write(SystemUtils.LINE_SEPARATOR);
+            writer.write(Environment.LINE_SEPARATOR);
         }
     }
 
@@ -265,7 +267,7 @@ public class UnifiedPatch implements Patch
                 if (hunk == null)
                 {
                     writer.write(line);
-                    writer.write(SystemUtils.LINE_SEPARATOR);
+                    writer.write(Environment.LINE_SEPARATOR);
                     lineNumber++;
                     line = reader.readLine();
                 }
@@ -291,6 +293,8 @@ public class UnifiedPatch implements Patch
                 }
             }
 
+            reader.close();
+
             // Apply lines and hunks from beyond the end of the original file.
             if (lineIt != null)
             {
@@ -301,6 +305,8 @@ public class UnifiedPatch implements Patch
             {
                 applyTrailingHunkLines(file, writer, hunkIt.next().getLines().iterator());
             }
+
+            writer.close();
         }
         catch (IOException e)
         {
@@ -308,8 +314,8 @@ public class UnifiedPatch implements Patch
         }
         finally
         {
-            IOUtils.close(reader);
-            IOUtils.close(writer);
+            IOUtils.failsafeClose(reader);
+            IOUtils.failsafeClose(writer);
         }
 
         copyTempToTarget(file, tempFile);
@@ -337,6 +343,8 @@ public class UnifiedPatch implements Patch
             is = new FileInputStream(tempFile);
             os = new FileOutputStream(file);
             IOUtils.joinStreams(is, os);
+            is.close();
+            os.close();
         }
         catch (IOException e)
         {
@@ -344,8 +352,8 @@ public class UnifiedPatch implements Patch
         }
         finally
         {
-            IOUtils.close(is);
-            IOUtils.close(os);
+            IOUtils.failsafeClose(is);
+            IOUtils.failsafeClose(os);
         }
     }
 

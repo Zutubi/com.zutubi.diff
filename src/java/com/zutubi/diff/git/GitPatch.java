@@ -4,7 +4,7 @@ import com.zutubi.diff.Patch;
 import com.zutubi.diff.PatchApplyException;
 import com.zutubi.diff.PatchParseException;
 import com.zutubi.diff.PatchType;
-import com.zutubi.util.StringUtils;
+import com.zutubi.diff.util.StringUtils;
 
 import java.io.File;
 import java.util.Collections;

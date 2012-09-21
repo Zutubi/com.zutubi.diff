@@ -2,7 +2,6 @@ package com.zutubi.diff.git;
 
 import com.zutubi.diff.*;
 import com.zutubi.diff.unified.UnifiedHunk;
-import com.zutubi.util.junit.ZutubiTestCase;
 import junit.framework.Assert;
 
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
-public class GitPatchParserTest extends ZutubiTestCase
+public class GitPatchParserTest extends DiffTestCase
 {
     private static final String EXTENSION_TXT = "txt";
 
@@ -145,7 +144,7 @@ public class GitPatchParserTest extends ZutubiTestCase
 
     private PatchFile parsePatchFile() throws PatchParseException
     {
-        InputStream inputStream = getInput(EXTENSION_TXT);
+        InputStream inputStream = getInput(getName(), EXTENSION_TXT);
         Reader reader = new InputStreamReader(inputStream);
         return parser.parse(reader);
     }

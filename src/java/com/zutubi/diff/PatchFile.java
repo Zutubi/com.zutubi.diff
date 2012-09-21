@@ -1,7 +1,5 @@
 package com.zutubi.diff;
 
-import com.zutubi.util.io.FileSystemUtils;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -65,7 +63,7 @@ public class PatchFile
 
     private File resolveDestination(File baseDir, String newFile, int prefixStripCount)
     {
-        newFile = FileSystemUtils.normaliseSeparators(newFile);
+        newFile = newFile.replace('\\', '/');
         int offset = 0;
         int i = 0;
         while (prefixStripCount-- > 0)

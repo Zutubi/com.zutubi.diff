@@ -1,6 +1,6 @@
 package com.zutubi.diff;
 
-import com.zutubi.util.io.IOUtils;
+import com.zutubi.diff.util.IOUtils;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -42,7 +42,9 @@ public class PatchFileParser
         try
         {
             peekReader = new PeekReader(input);
-            return read(peekReader, patchParser);
+            PatchFile patchFile = read(peekReader, patchParser);
+            peekReader.close();
+            return patchFile;
         }
         catch (IOException e)
         {
@@ -50,7 +52,7 @@ public class PatchFileParser
         }
         finally
         {
-            IOUtils.close(peekReader);
+            IOUtils.failsafeClose(peekReader);
         }
     }
 

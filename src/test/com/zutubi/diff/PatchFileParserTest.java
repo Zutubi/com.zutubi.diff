@@ -2,21 +2,16 @@ package com.zutubi.diff;
 
 import com.zutubi.diff.unified.UnifiedPatch;
 import com.zutubi.diff.unified.UnifiedPatchParser;
-import com.zutubi.util.SystemUtils;
-import com.zutubi.util.io.FileSystemUtils;
-import com.zutubi.util.io.ZipUtils;
-import com.zutubi.util.junit.ZutubiTestCase;
+import com.zutubi.diff.util.Environment;
+import com.zutubi.diff.util.IOUtils;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.zip.ZipInputStream;
 
 /**
  * NOTE: cygwin is required on the path for windows machines.
  */
-public class PatchFileParserTest extends ZutubiTestCase
+public class PatchFileParserTest extends DiffTestCase
 {
     private static final String PREFIX_TEST = "test";
     private static final String EXTENSION_PATCH = "txt";
@@ -35,8 +30,8 @@ public class PatchFileParserTest extends ZutubiTestCase
         oldDir = new File(tempDir, "old");
         newDir = new File(tempDir, "new");
 
-        ZipUtils.extractZip(new ZipInputStream(getInput("old", "zip")), oldDir);
-        ZipUtils.extractZip(new ZipInputStream(getInput("new", "zip")), newDir);
+        IOUtils.extractZip(new ZipInputStream(getInput("old", "zip")), oldDir);
+        IOUtils.extractZip(new ZipInputStream(getInput("new", "zip")), newDir);
 
         parser = new PatchFileParser(new UnifiedPatchParser());
     }
@@ -46,6 +41,35 @@ public class PatchFileParserTest extends ZutubiTestCase
     {
         removeDirectory(tempDir);
         super.tearDown();
+    }
+
+    private File createTempDirectory() throws IOException
+    {
+        File temp = File.createTempFile(getName(), ".tmp");
+        assertTrue(temp.delete());
+        assertTrue(temp.mkdir());
+        return temp;
+    }
+
+    private void removeDirectory(File dir)
+    {
+        File[] children = dir.listFiles();
+        if (children != null)
+        {
+            for (File child : children)
+            {
+                if (child.isDirectory())
+                {
+                    removeDirectory(child);
+                }
+                else
+                {
+                    assertTrue(child.delete());
+                }
+            }
+        }
+
+        assertTrue(dir.delete());
     }
 
     public void testEdited() throws Exception
@@ -115,7 +139,7 @@ public class PatchFileParserTest extends ZutubiTestCase
 
     public void testUnemptied() throws Exception
     {
-        if (!SystemUtils.IS_WINDOWS)
+        if (!Environment.OS_WINDOWS)
         {
             readApplyAndCheck();
         }
@@ -287,10 +311,10 @@ public class PatchFileParserTest extends ZutubiTestCase
     {
         ProcessBuilder processBuilder = new ProcessBuilder("diff", "-uN", "old/" + name, "new/" + name);
         processBuilder.directory(tempDir);
-        String diff = SystemUtils.runCommandWithInput(1, null, processBuilder);
+        String diff = runCommand(processBuilder, 1);
 
         File patch = new File(tempDir, "patch");
-        FileSystemUtils.createFile(patch, diff);
+        IOUtils.createFile(patch, diff);
 
         PatchFile patchFile = parser.parse(new FileReader(patch));
         applyAndCheck(patchFile, 1, name);
@@ -306,7 +330,7 @@ public class PatchFileParserTest extends ZutubiTestCase
 
     private PatchFile parseSinglePatch() throws PatchParseException
     {
-        return parser.parse(new InputStreamReader(getInput(EXTENSION_PATCH)));
+        return parser.parse(new InputStreamReader(getInput(getName(), EXTENSION_PATCH)));
     }
 
     private void applyAndCheck(PatchFile patchFile, int prefixStripCount, String name) throws PatchParseException, PatchApplyException, IOException
@@ -324,19 +348,67 @@ public class PatchFileParserTest extends ZutubiTestCase
                 assertTrue("Expected file '" + in.getName() + "' to be added, but it does not exist", in.exists());
             }
 
-            if (SystemUtils.IS_WINDOWS)
+            if (Environment.OS_WINDOWS)
             {
-                FileSystemUtils.translateEOLs(out, SystemUtils.CRLF_BYTES, true);
+                addCarriageReturns(out);
             }
 
             ProcessBuilder processBuilder = new ProcessBuilder("diff", "-uN", "old/" + name, "new/" + name);
             processBuilder.directory(tempDir);
-            String diff = SystemUtils.runCommandWithInput(-1, null, processBuilder);
+            String diff = runCommand(processBuilder, -1);
             assertTrue("Expected no differences, got:\n" + diff, diff.length() == 0);
         }
         else
         {
             assertFalse("Expected file '" + in.getName() + "' to be deleted, but it still exists", in.exists());
+        }
+    }
+
+    private void addCarriageReturns(File file) throws IOException
+    {
+        // This is not terribly efficient, but it matters little for the test data.
+        String content = IOUtils.readFile(file);
+        content = content.replace("\n", "\r\n");
+        IOUtils.createFile(file, content);
+    }
+
+    private String runCommand(ProcessBuilder processBuilder, int expectedExitCode) throws IOException
+    {
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+
+        InputStreamReader stdoutReader = null;
+        try
+        {
+            process.getOutputStream().close();
+            stdoutReader = new InputStreamReader(process.getInputStream());
+
+            int n;
+            char[] buffer = new char[8192];
+            StringBuilder stdout = new StringBuilder(1024);
+            while ((n = stdoutReader.read(buffer)) != -1)
+            {
+                stdout.append(buffer, 0, n);
+            }
+
+            stdoutReader.close();
+            int exitCode = process.waitFor();
+            if (expectedExitCode != -1)
+            {
+                assertEquals(expectedExitCode, exitCode);
+            }
+
+            process.destroy();
+
+            return stdout.toString();
+        }
+        catch (InterruptedException e)
+        {
+            throw new IOException("Interrupted while reading");
+        }
+        finally
+        {
+            IOUtils.failsafeClose(stdoutReader);
         }
     }
 

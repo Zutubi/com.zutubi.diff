@@ -21,8 +21,8 @@
     </publications>
 
     <dependencies>
-        <!-- Project module dependencies -->        
-        <dependency org="zutubi" name="com.zutubi.util" rev="latest.integration" conf="*->@"/>
+        <!-- Test dependencies -->
+        <dependency org="org.junit" name="org.junit" rev="4.8.2"  conf="test->default;src->src"/>
     </dependencies>
 </ivy-module>
 
