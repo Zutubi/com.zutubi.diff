@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="diff module" basedir=".">
-    <import file="../common-build.xml"/>
-
-    <target name="module-pre-init">
-        <dirname property="project.root.dir" file="../build.xml"/>
-    </target>
-</project>
