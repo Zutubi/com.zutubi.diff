@@ -2,9 +2,13 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-group = 'com.zutubi.diff'
-version = '3.0'
+ext {
+  pulseBuild = System.getenv('PULSE_BUILD_NUMBER')
+  build = pulseBuild ? pulseBuild : 'dev'
+}
 
+group = 'com.zutubi.diff'
+version = '3.0.' + build
 sourceCompatibility = 1.5
 
 repositories {
