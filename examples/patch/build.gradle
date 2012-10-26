@@ -1,0 +1,16 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+group = 'com.zutubi.diff'
+sourceCompatibility = 1.5
+manifest.mainAttributes("Main-Class" : "com.zutubi.diff.examples.patch.Patch")
+
+dependencies {
+    compile fileTree(dir: '../../build/libs', include: '*.jar')
+}
+
+jar {
+    dependsOn configurations.runtime
+    from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+}
