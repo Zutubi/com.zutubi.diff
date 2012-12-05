@@ -79,7 +79,7 @@ You can generate full Javadoc for the library by running:
 
     $ gradle javadoc
 
-The documentation will appear in `build/docs/javascript`.
+The documentation will appear in `build/docs/javadoc`.
 
 Feedback
 --------
