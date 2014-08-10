@@ -4,6 +4,8 @@ import com.zutubi.diff.util.IOUtils;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A generic patch file parser that can be used to parse files which are a
@@ -59,10 +61,11 @@ public class PatchFileParser
     private PatchFile read(PeekReader reader, PatchParser parser) throws IOException, PatchParseException
     {
         PatchFile patchFile = new PatchFile();
+        List<String> extendedInfo = new LinkedList<String>();
         while (!reader.spent())
         {
-            // Look for the patch header, skipping anything extra that may
-            // be in the way.
+            // Look for the patch header, putting anything extra into
+            // extendedInfo that may have a useful information.
             String line = reader.peek();
             if (parser.isPatchHeader(line))
             {
@@ -70,9 +73,11 @@ public class PatchFileParser
             }
             else
             {
+                extendedInfo.add(line);
                 reader.next();
             }
         }
+        patchFile.addExtendedInfo(extendedInfo);
 
         return patchFile;
     }
