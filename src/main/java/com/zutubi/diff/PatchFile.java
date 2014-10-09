@@ -12,6 +12,7 @@ import java.util.List;
 public class PatchFile
 {
     private List<Patch> patches = new LinkedList<Patch>();
+    private List<String> extendedInfo;
 
     /**
      * Returns a list of patches, one for each changed file in this patch file.
@@ -24,6 +25,17 @@ public class PatchFile
     }
 
     /**
+     * Returns the extended header lines in this patch file that may contain
+     * a information such as commit message.
+     *
+     * @return the extended info lines in this patch file (unmodifiable)
+     */
+    public List<String> getExtendedInfo()
+    {
+        return Collections.unmodifiableList(extendedInfo);
+    }
+
+    /**
      * Adds the given patch to this file.
      *
      * @param patch the patch to add
@@ -31,6 +43,16 @@ public class PatchFile
     public void addPatch(Patch patch)
     {
         patches.add(patch);
+    }
+
+    /**
+     * Adds the given extended header lines to this file.
+     *
+     * @param extendedInfo the extended header lines to add
+     */
+    public void addExtendedInfo(List<String> extendedInfo)
+    {
+        this.extendedInfo = new LinkedList<String>(extendedInfo);
     }
 
     /**
