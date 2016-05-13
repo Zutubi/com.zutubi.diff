@@ -4,7 +4,6 @@ apply plugin: 'idea'
 
 group = 'com.zutubi.diff'
 sourceCompatibility = 1.5
-manifest.mainAttributes("Main-Class" : "com.zutubi.diff.examples.patch.Patch")
 
 dependencies {
     compile fileTree(dir: '../../build/libs', include: '*.jar')
@@ -12,5 +11,8 @@ dependencies {
 
 jar {
     dependsOn configurations.runtime
+    manifest {
+        attributes "Main-Class": "com.zutubi.diff.examples.patch.Patch"
+    }
     from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
 }
