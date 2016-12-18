@@ -83,6 +83,8 @@ public class UnifiedPatchParser implements PatchParser
     private static final Pattern RE_EPOCH = Pattern.compile(".*(1970-01-01|\\(revision 0\\)).*");
     private static final Pattern RE_HUNK = Pattern.compile("\\s*@@\\s+-(\\d+)(?:,(\\d+))?\\s+\\+(\\d+)(?:,(\\d+))?\\s+@@\\s*");
 
+    private static final char[] QUOTE_CHARS = new char[] { '"', '\'' };
+
     /**
      * Struct to hold information for a patch header line.
      */
@@ -165,7 +167,28 @@ public class UnifiedPatchParser implements PatchParser
         String trim = line.substring(indicator.length()).trim();
         String[] parts = trim.split("\\t", 2);
         String filename = parts[0];
-        if (parts[0].length() == 0)
+        int length = filename.length();
+
+        // If the filename is quoted, strip the quotes
+        if (length >= 2) {
+            // Only run if the length of the filename has two or more chars
+            char firstChar = filename.charAt(0);
+            char lastChar = filename.charAt(length - 1);
+            // Check each of the possible quote characters
+            for (char quoteChar : QUOTE_CHARS) {
+                // If both the first and last character of the filename match
+                // the quote character, strip the quotes and break the loop so
+                // that we do not accidently strip multiple different types of
+                // quotes.
+                if (firstChar == quoteChar && lastChar == quoteChar) {
+                    filename = filename.substring(1, length - 1);
+                    length -= 2;
+                    break;
+                }
+            }
+        }
+
+        if (length == 0)
         {
             throw new PatchParseException(reader.getLineNumber(), "Patch header line '" + line + "' is missing filename");
         }
