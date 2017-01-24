@@ -2,6 +2,8 @@ package com.zutubi.diff.git;
 
 import com.zutubi.diff.*;
 import com.zutubi.diff.unified.UnifiedHunk;
+import com.zutubi.diff.unified.UnifiedHunk.Line;
+
 import junit.framework.Assert;
 
 import java.io.IOException;
@@ -22,12 +24,32 @@ public class GitPatchParserTest extends DiffTestCase
         assertPatchDetails(patch, "README.txt", "README.txt", PatchType.EDIT);
 
         List<UnifiedHunk> hunks = ((GitUnifiedPatch) patch).getHunks();
+        assertSimpleEdit(hunks);
+
+        UnifiedHunk hunk = hunks.get(0);
+        Assert.assertNull(hunk.getSectionHeading());
+    }
+
+    public void testSimpleEditWithSectionHeading() throws IOException, PatchParseException
+    {
+        GitPatch patch = parseSinglePatch();
+        assertPatchDetails(patch, "README.txt", "README.txt", PatchType.EDIT);
+
+        List<UnifiedHunk> hunks = ((GitUnifiedPatch) patch).getHunks();
+        assertSimpleEdit(hunks);
+
+        UnifiedHunk hunk = hunks.get(0);
+        Assert.assertEquals("a section heading", hunk.getSectionHeading());
+    }
+
+    private void assertSimpleEdit(List<UnifiedHunk> hunks)
+    {
         Assert.assertEquals(1, hunks.size());
 
         UnifiedHunk hunk = hunks.get(0);
         Assert.assertEquals(1, hunk.getOldOffset());
         Assert.assertEquals(6, hunk.getOldLength());
-        
+
         List<UnifiedHunk.Line> lines = hunk.getLines();
         Assert.assertEquals(8, lines.size());
         UnifiedHunk.Line line = lines.get(3);

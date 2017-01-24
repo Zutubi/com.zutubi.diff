@@ -16,25 +16,31 @@ public class UnifiedHunk
     private long oldLength;
     private long newOffset;
     private long newLength;
+    private String sectionHeading;
 
     private List<Line> lines = new LinkedList<Line>();
 
     /**
      * Create a new hunk with the given locations in the old and new files.
      *
-     * @param oldOffset one-based line offset of the first corresponding line
-     *                  in the old file
-     * @param oldLength number of lines in the hunk that appear in the old file
-     * @param newOffset one-based line offset of the first corresponding line
-     *                  in the new file
-     * @param newLength number of lines in the hunk that appear in the new file
+     * @param oldOffset      one-based line offset of the first corresponding
+     *                       line in the old file
+     * @param oldLength      number of lines in the hunk that appear in the
+     *                       old file
+     * @param newOffset      one-based line offset of the first corresponding
+     *                       line in the new file
+     * @param newLength      number of lines in the hunk that appear in the
+     *                       new file
+     * @param sectionHeading the optional section heading that may be included
+     *                       to make the patch easier to read
      */
-    public UnifiedHunk(long oldOffset, long oldLength, long newOffset, long newLength)
+    public UnifiedHunk(long oldOffset, long oldLength, long newOffset, long newLength, String sectionHeading)
     {
         this.oldOffset = oldOffset;
         this.oldLength = oldLength;
         this.newOffset = newOffset;
         this.newLength = newLength;
+        this.sectionHeading = sectionHeading;
     }
 
     /**
@@ -69,6 +75,16 @@ public class UnifiedHunk
     public long getNewLength()
     {
         return newLength;
+    }
+
+    /**
+     * @return the section heading that may be included to make the patch
+     *         easier to read or null if the hunk does not have a section
+     *         heading
+     */
+    public String getSectionHeading()
+    {
+        return sectionHeading;
     }
 
     /**
