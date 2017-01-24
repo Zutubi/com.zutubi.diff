@@ -85,6 +85,7 @@ public class PatchFile
 
     private File resolveDestination(File baseDir, String newFile, int prefixStripCount)
     {
+        newFile = stripQuotes(newFile);
         newFile = newFile.replace('\\', '/');
         int offset = 0;
         int i = 0;
@@ -100,5 +101,19 @@ public class PatchFile
         }
 
         return new File(baseDir, newFile.substring(i));
+    }
+
+    private String stripQuotes(String filename)
+    {
+        int len = filename.length();
+        if (len < 2) {
+            return filename;
+        }
+        char first = filename.charAt(0);
+        char last = filename.charAt(len - 1);
+        if (first == last && first == '"') {
+            return filename.substring(1, len - 1);
+        }
+        return filename;
     }
 }

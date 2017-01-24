@@ -1,0 +1,11 @@
+--- old/file with space characters.txt	2009-04-01 11:30:22.000000000 +0200
++++ new/file with space characters.txt	2009-04-01 11:51:52.000000000 +0200
+@@ -6,7 +6,7 @@
+ special cases in some
+ patch formats (like
+ git's)
+-
++edit the blank line for fun
+ Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+ sed do eiusmod tempor incididunt ut labore et dolore
+ magna aliqua. Ut enim ad minim veniam, quis nostrud

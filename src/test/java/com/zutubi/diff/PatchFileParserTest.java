@@ -302,6 +302,16 @@ public class PatchFileParserTest extends DiffTestCase
         }
     }
 
+    public void testPatchFileWithSpaceCharactersUnquoted() throws Exception
+    {
+        singleFilePatchHelper(1);
+    }
+
+    public void testPatchFileWithSpaceCharactersQuoted() throws Exception
+    {
+        singleFilePatchHelper(1);
+    }
+
     private void readApplyAndCheck() throws Exception
     {
         readApplyAndCheck(convertName());
@@ -322,10 +332,15 @@ public class PatchFileParserTest extends DiffTestCase
 
     private void singleFilePatchHelper() throws PatchParseException, PatchApplyException, IOException
     {
+        singleFilePatchHelper(0);
+    }
+
+    private void singleFilePatchHelper(int prefixStripCount) throws PatchParseException, PatchApplyException, IOException
+    {
         PatchFile pf = parseSinglePatch();
         assertEquals(1, pf.getPatches().size());
         String patchedFile = pf.getPatches().get(0).getNewFile();
-        applyAndCheck(pf, 0, patchedFile);
+        applyAndCheck(pf, prefixStripCount, patchedFile);
     }
 
     private PatchFile parseSinglePatch() throws PatchParseException
