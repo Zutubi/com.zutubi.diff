@@ -81,7 +81,7 @@ import java.util.regex.Pattern;
 public class UnifiedPatchParser implements PatchParser
 {
     private static final Pattern RE_EPOCH = Pattern.compile(".*(1970-01-01|\\(revision 0\\)).*");
-    private static final Pattern RE_HUNK = Pattern.compile("\\s*@@\\s+-(\\d+)(?:,(\\d+))?\\s+\\+(\\d+)(?:,(\\d+))?\\s+@@\\s*");
+    private static final Pattern RE_HUNK = Pattern.compile("\\s*@@\\s+-(\\d+)(?:,(\\d+))?\\s+\\+(\\d+)(?:,(\\d+))?\\s+@@.*");
 
     private static final char[] QUOTE_CHARS = new char[] { '"', '\'' };
 

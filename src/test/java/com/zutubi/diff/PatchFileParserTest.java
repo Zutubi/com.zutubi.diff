@@ -175,6 +175,11 @@ public class PatchFileParserTest extends DiffTestCase
         readApplyAndCheck("file with space characters.txt");
     }
 
+    public void testShowCFunction() throws Exception
+    {
+        singleFilePatchHelper();
+    }
+
     public void testSubversionFileEdited() throws Exception
     {
         singleFilePatchHelper();
